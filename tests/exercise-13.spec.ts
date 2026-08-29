@@ -1,14 +1,25 @@
 import { test, expect } from "@playwright/test";
-import {DropdownPage} from "./pages/DropdownPage";
 
 test("Exercise 13: Handle Dropdown Lists", async ({page}) => {
-    const dropdownPage = new DropdownPage(page);
+    await page.goto("/module-4/exercise-13");
 
-    await dropdownPage.goto();
+    //Standard Dropdown (HTML <select>)
+    const standardSelect = page.locator("#standard-dropdown");
+    await standardSelect.selectOption("red");
+    await expect(standardSelect).toHaveValue("red");
+    await expect(page.locator("#standard-result")).toHaveText
+    ("You selected: red");
 
-    await dropdownPage.selectStandardOption("red");
-    await dropdownPage.verifyStandadrdSelection("red");
+    //Custom Dropdown
+    const customDropdownBtn = page.locator
+    ("#custom-dropdown-toggle");
+    await customDropdownBtn.click();
 
-    await dropdownPage.selectCustomOption("Option B");
-    await dropdownPage.verifyCustomSelection("Option B");
+    //Wait for dropdown to open and click an option
+    const option = page.locator(".custom-option", {hasText:
+        "Option B"});
+    await option.click();
+
+    //Verify selected Text
+    await expect(customDropdownBtn).toHaveText("Option B");
 })
